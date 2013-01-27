@@ -1,0 +1,220 @@
+body, html {
+	background: #2f363c;
+	color: white;
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto', sans-serif;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+#foursquare {
+	width: 100%;
+	height: 98px;
+	position: relative;
+	overflow: hidden;
+	top: 0;
+	left: 0;
+}
+#foursquare .scroll-wrap {
+	position: absolute;
+	white-space:nowrap;
+}
+
+#foursquare .fs-three {
+	float: left;
+	height: 95px;
+	overflow: hidden;
+	font-size: 24px;
+	color: #FFF;
+	text-decoration: none;
+}
+#foursquare .fs-three:nth-child(3n) {
+	border-bottom: 3px solid #00b4ff;
+}
+#foursquare .fs-three:nth-child(3n+1) {
+	border-bottom: 3px solid #de00ff;
+}
+#foursquare .fs-three:nth-child(3n+2) {
+	border-bottom: 3px solid #00ff24;
+}
+#foursquare img {
+	margin: 20px;
+	float: left;
+	width: 56px;
+}
+.fs-three h2 {
+	display: block;
+	font-size: 100%;
+	margin: 15px 0 0 0;
+	font-weight: 400;
+	color: white;
+	line-height: 30px;
+}
+.fs-three cite {
+	font-size: 13px;
+	margin: 0;
+	font-weight: 300;
+	opacity: 0.75;
+	padding: 0 10px 0 0;
+}
+#main {
+	height: 100%;
+}
+#nearby {
+	background: rgba(255,255,255,0.05);
+	padding: 0 20px;
+	height: 100%;
+}
+#main .grid-three {
+	width: 33.333%;
+	float: left;
+	min-height: 20px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+h3 {
+	text-transform: uppercase;
+}
+
+#twitter {
+	overflow: hidden;
+	position: relative;
+	height: 100%;
+}
+
+#twitter .scroll-wrap {
+	position: absolute;
+	overflow: hidden;
+}
+
+.tweet {
+	position: relative;
+	clear: both;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	overflow: hidden;
+}
+
+.tweet .tweetImage {
+	float: left;
+	padding: 10px;
+}
+
+.tweet a {
+	color: white;
+	text-decoration: none;
+}
+
+.tweet .tweetStatus {
+	padding: 10px;
+	font-size: 14px;
+}
+
+.tweet.background .tweetStatus {
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.tweetInfo {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.tweet.background .tweetInfo {
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.tweetInfo cite {
+	font-size: 12px;
+	float: right;
+	padding: 5px 10px;
+}
+
+.tweet .tweetQR {
+	display: none;
+}
+
+.tweet .tweetMedia {
+	width: 100%;
+}
+
+.place {
+	display: block;
+	float: left;
+	clear: both;
+	width: 100%;
+	position: relative;
+}
+.place .countdown {
+	display: none;
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	font-size: 15px;
+}
+.place[data-status="open"] .status {
+	width: 18px;
+	height: 18px;
+	background: url(img/open.png) no-repeat;
+	margin: 17px;
+	float: left;
+}
+.place[data-status="closed"] .status {
+	width: 18px;
+	height: 18px;
+	background: url(img/closed.png) no-repeat;
+	margin: 17px;
+	float: left;
+}
+.place[data-status="closing"] .status {
+	width: 18px;
+	height: 18px;
+	background: url(img/closing.png) no-repeat;
+	margin: 17px;
+	float: left;
+}
+.place[data-status="closing"] .countdown {
+	display: block;
+}
+.place .storeName {
+	float: left;
+	color: white;
+	text-decoration: none;
+	margin: 1em 0;
+}
+
+#instagram {
+	position: relative;
+	overflow: hidden;
+	height: 100%;
+}
+#instagram .scroll-wrap {
+	position: absolute;
+}
+#instagram .picture {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+}
+#instagram .picture img {
+	width: 100%;
+	float: left;
+}
+#instagram .picture .userInfo {
+	box-sizing: border-box;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	height: 35px;
+	background: rgba(0,0,0,0.7);
+	color: #ddd;
+	padding: 5px 15px;
+}
+
+#instagram .picture .timeago {
+	float: right;
+	font-size: 12px;
+	line-height: 25px;
+}
