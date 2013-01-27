@@ -508,21 +508,18 @@ $(function(){
   updateTwitter();
   setInterval(updateTwitter, 300000);
 
-  //scroll Twitter every 5 seconds
-  setInterval(scrollTwitter, 5000);
-
   //update Foursquare every 5 minutes
   updateFoursquare();
   setInterval(updateFoursquare, 300000);
-
-  //scroll Foursquare every 5 seconds
-  setInterval(scrollFoursquare, 5000);
 
   //update Instagram every 30 minutes 
   updateInstagram();
   setInterval(updateInstagram, 1800000);
 
-  //scroll Instagram every 5 seconds
-  setInterval(scrollInstagram, 5000);
+  //scroll every 5 seconds
+  setInterval(function(){ scrollInstagram(); scrollFoursquare(); scrollTwitter() }, 5000);
+
+  //reload browser every 6 hours
+  setInterval(function(){ window.location.reload(true); }, 21600000);
   
 });
