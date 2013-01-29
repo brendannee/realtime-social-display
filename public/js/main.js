@@ -1,5 +1,4 @@
 var since_id = 0,
-    tweetIdx,
     nearby = [
   {
       name: 'Foodsco'
@@ -309,7 +308,7 @@ function processTweet(tweet){
   }
 
 
-if (tweet.entities.media){
+  if (tweet.entities.media){
     //grab first image
     var height = $('#twitter').width() / tweet.entities.media[0].sizes.orig.w * tweet.entities.media[0].sizes.orig.h;
     $('#' + tweet.id)
@@ -338,16 +337,11 @@ if (tweet.entities.media){
 
 
 function scrollTwitter() {
-  tweetIdx = (tweetIdx < ($('#twitter .tweet').length - 1)) ? tweetIdx + 1 : 2;
-  var cumHeight = 0,
-      windowHeight = $(window).height();
-  var tweetHeights = $.map($.makeArray($('#twitter .tweet')).reverse(), function(tweet, idx){
-    var height = cumHeight;
-    cumHeight += $(tweet).outerHeight();
-    return height;
-  });
-  var offset = windowHeight - tweetHeights[tweetIdx];
-  $('#twitter .scroll-wrap').animate({bottom: offset}, 800);
+  var last = $('#twitter .tweet:last-child');
+  $('#twitter .scroll-wrap')
+    .prepend(last)
+    .css('top', -$(last).height())
+    .animate({top: 0}, 800)
 }
 
 
@@ -457,9 +451,8 @@ function updateFoursquare() {
 
 
 function scrollFoursquare() {
-  var width = $(window).width() / 3,
-      first = $('#foursquare .scroll-wrap a:first-child');
-  $('#foursquare .scroll-wrap').animate({left: -width}, 800, function(){
+  var first = $('#foursquare .scroll-wrap a:first-child');
+  $('#foursquare .scroll-wrap').animate({left: -$(first).width()}, 800, function(){
     $('#foursquare .scroll-wrap')
       .append(first)
       .css('left', 0)
@@ -467,9 +460,9 @@ function scrollFoursquare() {
 }
 
 function updateInstagram() {
-  $('#instagram .picture').remove();
   $.getJSON('/api/instagram.json', function(data) {
     if(data.length) {
+      $('#instagram .picture').remove();
       data.forEach(function(picture) {
         var createdAt = new Date(picture.created_time*1000);
         $('<div>')
@@ -490,14 +483,12 @@ function updateInstagram() {
 }
 
 function scrollInstagram() {
-  var height = $('#instagram').width(),
-      top = parseInt($('#instagram .scroll-wrap').css('top'), 10) || 0;
-  if($('#instagram .scroll-wrap').height() > (top*-1 + $(window).height())) {
-    var offset = top - height;
-  } else {
-    var offset = 0;
-  }
-  $('#instagram .scroll-wrap').animate({top: offset}, 800);
+  var first = $('#instagram .scroll-wrap .picture:first-child');
+  $('#instagram .scroll-wrap').animate({top: -$(first).height()}, 800, function(){
+    $('#instagram .scroll-wrap')
+      .append(first)
+      .css('top', 0);
+  });
 }
 
 
