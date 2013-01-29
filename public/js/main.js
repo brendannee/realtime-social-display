@@ -382,8 +382,9 @@ function updatePlaces(){
           .addClass('countdown'))
         .appendTo('#nearby');
     }
-
-    if(currentHours < hours[0] || currentHours >= hours[1]) {
+    if(hours[1] - hours[0] == 24) {
+      status = 'open';
+    } else if(currentHours < hours[0] || currentHours >= hours[1]) {
       status = 'closed';
     } else if(currentHours == (hours[1] - 1) ) {
       status = 'closing';
@@ -417,31 +418,34 @@ function updateFoursquare() {
     if(data && data.response) {
       data.response.recent.forEach(function(checkin) {
         if(users.indexOf(parseInt(checkin.user.id, 10)) != -1) {
-          var div = $('#foursquare_' + checkin.user.id);
-          if(!div.length) {
-            div = $('<a>')
-              .attr('id', 'foursquare_' + checkin.user.id)
-              .addClass('fs-three')
-              .width(width)
-              .append('<img>')
-              .append('<h2>')
-              .append('<cite>')
-              .appendTo('#foursquare .scroll-wrap');
-          }
-          $(div)
-            .attr('href', checkin.venue.canonicalUrl);
-          $('h2', div)
-            .html(checkin.venue.name)
-          $('img', div)
-            .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix)
-          var createdAt = new Date(checkin.createdAt * 1000);
-          $('cite', div)
-            .attr('title', createdAt.toISOString());
+          var div = $('#foursquare_' + checkin.user.id),
+              createdAt = new Date(checkin.createdAt * 1000);
+          if(new Date().getTime() - createdAt.getTime() < 14*24*60*60*1000 ) {
+            //only show checkins newer than two weeks
+            if(!div.length) {
+              div = $('<a>')
+                .attr('id', 'foursquare_' + checkin.user.id)
+                .addClass('fs-three')
+                .width(width)
+                .append('<img>')
+                .append('<h2>')
+                .append('<cite>')
+                .appendTo('#foursquare .scroll-wrap');
+            }
+            $(div)
+              .attr('href', checkin.venue.canonicalUrl);
+            $('h2', div)
+              .html(checkin.venue.name)
+            $('img', div)
+              .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix)
+            $('cite', div)
+              .attr('title', createdAt.toISOString());
 
-          //size title
-          var ratio =  26 / $('h2', div).text().length;
-          if(ratio < 1) {
-            $('h2', div).css('font-size', Math.round(ratio*10000)/100 + '%');
+            //size title
+            var ratio =  26 / $('h2', div).text().length;
+            if(ratio < 1) {
+              $('h2', div).css('font-size', Math.round(ratio*10000)/100 + '%');
+            }
           }
         }
         
@@ -454,13 +458,12 @@ function updateFoursquare() {
 
 function scrollFoursquare() {
   var width = $(window).width() / 3,
-      left = parseInt($('#foursquare .scroll-wrap').css('left'), 10) || 0;
-  if($('#foursquare .scroll-wrap').width() > (left*-1 + $(window).width())) {
-    var offset = left - width;
-  } else {
-    var offset = 0;
-  }
-  $('#foursquare .scroll-wrap').animate({left: offset}, 800);
+      first = $('#foursquare .scroll-wrap a:first-child');
+  $('#foursquare .scroll-wrap').animate({left: -width}, 800, function(){
+    $('#foursquare .scroll-wrap')
+      .append(first)
+      .css('left', 0)
+  });
 }
 
 function updateInstagram() {
