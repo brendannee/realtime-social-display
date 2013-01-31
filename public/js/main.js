@@ -202,21 +202,6 @@ var usernames = [
     'from:betula82'
    ];
 
-
-jQuery.fn.orderBy = function(keySelector)
-{
-    return this.sort(function(a,b)
-    {
-        a = keySelector.apply(a);
-        b = keySelector.apply(b);
-        if (a > b)
-            return 1;
-        if (a < b)
-            return -1;
-        return 0;
-    });
-};
-
 var linkify = (function() {
   var replaceSubstr = function(text, i, j, substr) {
     return text.substr(0, i) + substr + text.substr(j);
@@ -298,11 +283,11 @@ function processTweet(tweet){
   var statusUrl = 'http://www.twitter.com/' + tweet.from_user + '/status/' + tweet.id;
   var qrUrl = 'http://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(statusUrl) + '&size=80x80';
   var tweetHtml = '<div class="tweet" id="' + tweet.id + '">';
-  tweetHtml    += '<img src="' + tweet.profile_image_url.replace('_normal', '_bigger') + '" class="tweetImage">';
-  tweetHtml    += '<div class="tweetStatus">' + linkify(tweet) + '</div>';
-  tweetHtml    += '<div class="tweetInfo">';
-  tweetHtml    += '<cite class="timeago" title="' + tweet.created_at + '"></cite>';
-  tweetHtml    += '</div>';
+  tweetHtml += '<div class="userInfo">';
+  tweetHtml += '<img src="' + tweet.profile_image_url.replace('_normal', '_bigger') + '" class="tweetImage">';
+  tweetHtml += '<div class="tweetStatus">' + linkify(tweet) + '</div>';
+  tweetHtml += '<cite class="timeago" title="' + tweet.created_at + '"></cite>';
+  tweetHtml += '</div>';
   if(tweet.entities.media || (tweet.entities.urls && tweet.entities.urls.length)) {
     tweetHtml    += '<img src="' + qrUrl + '" class="tweetQR">';  
   }
@@ -335,16 +320,14 @@ function processTweet(tweet){
   $('#twitter .scroll-wrap').append(tweetHtml);
 }
 
-
 function scrollTwitter() {
-  var last = $('#twitter .tweet:last-child');
-  $('#twitter .scroll-wrap')
-    .prepend(last)
-    .css('top', -$(last).height())
-    .animate({top: 0}, 800)
+  var first = $('#twitter .tweet:first-child');
+  $('#twitter .scroll-wrap').animate({top: -$(first).height()}, 800, function(){
+    $('#twitter .scroll-wrap')
+      .append(first)
+      .css('top', 0);
+  });
 }
-
-
 
 function updatePlaces(){
   var currentTime = new Date(),
@@ -389,20 +372,15 @@ function updatePlaces(){
     $('.countdown', div).html(((currentMinutes - 60) * -1) + " min");
   });
 
-  //sort
-  $("#nearby .place").orderBy(function() {
-    switch($(this).data('status')){
-      case 'open':
-        return 0;
-        break;
-      case 'closing':
-        return 1;
-        break;
-      case 'closed':
-        return 2;
-        break;
-    }
-  }).appendTo("#nearby");
+  $('#nearby [data-status="open"]').each(function(idx, item){
+    $('#nearby').append(item);
+  });
+  $('#nearby [data-status="closing"]').each(function(idx, item){
+    $('#nearby').append(item);
+  });
+  $('#nearby [data-status="closed"]').each(function(idx, item){
+    $('#nearby').append(item);
+  });
 }
 
 function updateFoursquare() {
@@ -414,24 +392,28 @@ function updateFoursquare() {
         if(users.indexOf(parseInt(checkin.user.id, 10)) != -1) {
           var div = $('#foursquare_' + checkin.user.id),
               createdAt = new Date(checkin.createdAt * 1000);
-          if(new Date().getTime() - createdAt.getTime() < 14*24*60*60*1000 ) {
-            //only show checkins newer than two weeks
+          if(new Date().getTime() - createdAt.getTime() < 15*24*60*60*1000 ) {
+            //only show checkins newer than one day
             if(!div.length) {
               div = $('<a>')
                 .attr('id', 'foursquare_' + checkin.user.id)
-                .addClass('fs-three')
+                .addClass('foursquare')
                 .width(width)
                 .append('<img>')
                 .append('<h2>')
+                .append($('<div>')
+                  .addClass('shout'))
                 .append('<cite>')
                 .appendTo('#foursquare .scroll-wrap');
             }
             $(div)
               .attr('href', checkin.venue.canonicalUrl);
             $('h2', div)
-              .html(checkin.venue.name)
+              .html(checkin.venue.name);
             $('img', div)
-              .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix)
+              .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix);
+            $('.shout', div)
+              .html(checkin.shout);
             $('cite', div)
               .attr('title', createdAt.toISOString());
 
@@ -465,17 +447,19 @@ function updateInstagram() {
       $('#instagram .picture').remove();
       data.forEach(function(picture) {
         var createdAt = new Date(picture.created_time*1000);
-        $('<div>')
-          .addClass('picture')
-          .append($('<img>')
-            .attr('src', picture.images.standard_resolution.url))
-          .append($('<div>')
-            .addClass('userInfo')
-            .html(picture.user.full_name)
-            .append($('<cite>')
-              .addClass('timeago')
-              .attr('title', createdAt.toISOString())))
-          .appendTo('#instagram .scroll-wrap');
+        if(new Date().getTime() - createdAt.getTime() < 60*24*60*60*1000 ) {
+          $('<div>')
+            .addClass('picture')
+            .append($('<img>')
+              .attr('src', picture.images.standard_resolution.url))
+            .append($('<div>')
+              .addClass('userInfo')
+              .html(picture.user.full_name)
+              .append($('<cite>')
+                .addClass('timeago')
+                .attr('title', createdAt.toISOString())))
+            .appendTo('#instagram .scroll-wrap');
+        }
       });
       $('#instagram .timeago').timeago()
     }
