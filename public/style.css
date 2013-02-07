@@ -102,7 +102,7 @@ h3 {
 	overflow: hidden;
 	min-height: 98px;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.7);
 }
 
 .tweet .userInfo {

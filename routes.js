@@ -35,7 +35,7 @@ module.exports = function routes(app){
         cb();
       });
     }, function(e) {
-      res.json(_.shuffle(pictures));
+      res.json(_.sortBy(pictures, function(picture){ return -1 * picture.created_time; }));
     });
 
   });

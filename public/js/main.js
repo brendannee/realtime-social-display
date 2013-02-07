@@ -392,7 +392,7 @@ function updateFoursquare() {
         if(users.indexOf(parseInt(checkin.user.id, 10)) != -1) {
           var div = $('#foursquare_' + checkin.user.id),
               createdAt = new Date(checkin.createdAt * 1000);
-          if(new Date().getTime() - createdAt.getTime() < 15*24*60*60*1000 ) {
+          if(new Date().getTime() - createdAt.getTime() < 24*60*60*1000 ) {
             //only show checkins newer than one day
             if(!div.length) {
               div = $('<a>')
