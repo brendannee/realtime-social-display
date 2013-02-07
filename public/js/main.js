@@ -1,5 +1,5 @@
 var since_id = 0,
-    isPi = navigator.userAgent.indexOf("Linux i686"),
+    isPi = (navigator.userAgent.indexOf("armv6") != -1),
     nearby = [
   {
       name: 'Foodsco'
@@ -323,11 +323,17 @@ function processTweet(tweet){
 
 function scrollTwitter() {
   var first = $('#twitter .tweet:first-child');
-  $('#twitter .scroll-wrap').animate({top: -$(first).height()}, 800, function(){
-    $('#twitter .scroll-wrap')
-      .append(first)
-      .css('top', 0);
-  });
+  if(isPi) {
+    $('#twitter .scroll-wrap').append(first);
+  } else {
+    $('#twitter .scroll-wrap').animate({top: -$(first).height()}, 800, function(){
+      $('#twitter .scroll-wrap')
+        .append(first)
+        .css('top', 0);
+    });
+  }
+
+  
 }
 
 function updatePlaces(){
@@ -435,11 +441,15 @@ function updateFoursquare() {
 
 function scrollFoursquare() {
   var first = $('#foursquare .scroll-wrap a:first-child');
-  $('#foursquare .scroll-wrap').animate({left: -$(first).width()}, 800, function(){
-    $('#foursquare .scroll-wrap')
-      .append(first)
-      .css('left', 0)
-  });
+  if(isPi) {
+    $('#foursquare .scroll-wrap').append(first);
+  } else {
+    $('#foursquare .scroll-wrap').animate({left: -$(first).width()}, 800, function(){
+      $('#foursquare .scroll-wrap')
+        .append(first)
+        .css('left', 0)
+    });
+  }
 }
 
 function updateInstagram() {
@@ -469,16 +479,19 @@ function updateInstagram() {
 
 function scrollInstagram() {
   var first = $('#instagram .scroll-wrap .picture:first-child');
-  $('#instagram .scroll-wrap').animate({top: -$(first).height()}, 800, function(){
-    $('#instagram .scroll-wrap')
-      .append(first)
-      .css('top', 0);
-  });
+  if(isPi) {
+    $('#instagram .scroll-wrap').append(first);
+  } else {
+    $('#instagram .scroll-wrap').animate({top: -$(first).height()}, 800, function(){
+      $('#instagram .scroll-wrap')
+        .append(first)
+        .css('top', 0);
+    });
+  }
 }
 
 
 $(function(){
-  alert(navigator.userAgent)
 
   //check open times every minute
   updatePlaces();
