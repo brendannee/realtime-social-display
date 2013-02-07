@@ -1,4 +1,5 @@
 var since_id = 0,
+    isPi = navigator.userAgent.indexOf("Linux i686"),
     nearby = [
   {
       name: 'Foodsco'
@@ -477,6 +478,7 @@ function scrollInstagram() {
 
 
 $(function(){
+  alert(navigator.userAgent)
 
   //check open times every minute
   updatePlaces();
