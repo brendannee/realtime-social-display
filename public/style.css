@@ -43,6 +43,7 @@ cite {
 	overflow: hidden;
 	color: #FFF;
 	text-decoration: none;
+	font-size: 24px;
 }
 .foursquare img {
 	margin: 20px;
@@ -50,7 +51,7 @@ cite {
 	width: 56px;
 }
 .foursquare h2 {
-	font-size: 24px;
+	font-size: 100%;
 	display: block;
 	margin: 15px 0 0 0;
 	font-weight: 400;
@@ -85,7 +86,6 @@ cite {
 h3 {
 	text-transform: uppercase;
 }
-
 #twitter {
 	overflow: hidden;
 	position: relative;
@@ -105,10 +105,6 @@ h3 {
 	background-color: rgba(0, 0, 0, 0.7);
 }
 
-.tweet .userInfo {
-	overflow: hidden;
-}
-
 .tweet.background .userInfo {
 	position: absolute;
 	background: rgba(0, 0, 0, 0.7);
@@ -118,32 +114,38 @@ h3 {
 	min-height: 90px;
 }
 
-.tweet .tweetImage {
-	float: left;
-	padding: 10px;
-}
-
-.tweet a {
-	color: white;
-	text-decoration: none;
-}
-
-.tweet .tweetStatus {
-	padding: 10px;
-	font-size: 14px;
-}
-
-.tweet cite {
-	float: right;
-	padding: 5px 10px;
-}
-
 .tweet .tweetQR {
 	display: none;
 }
 
 .tweet .tweetMedia {
 	width: 100%;
+}
+
+.userInfo {
+	overflow: hidden;
+}
+
+.userInfo a{
+	color: white;
+	text-decoration: none;
+}
+
+.userInfo img.userImage {
+	float: left;
+	padding: 10px;
+	width: 80px;
+}
+
+.userInfo .caption {
+	padding: 10px;
+	font-size: 14px;
+}
+
+.userInfo cite {
+	position: absolute;
+	bottom: 5px;
+	right: 10px;
 }
 
 .place {
@@ -199,26 +201,25 @@ h3 {
 #instagram .scroll-wrap {
 	position: absolute;
 }
-#instagram .picture {
+#instagram .instagram {
 	width: 100%;
 	position: relative;
 	overflow: hidden;
 }
-#instagram .picture img {
+
+#instagram .instagram img.instagramImage {
 	width: 100%;
 	float: left;
 }
-#instagram .picture .userInfo {
+
+#instagram .instagram .userInfo {
 	box-sizing: border-box;
 	width: 100%;
 	position: absolute;
 	bottom: 0;
-	height: 35px;
+	height: 100px;
 	background: rgba(0,0,0,0.7);
 	color: #ddd;
-	padding: 5px 15px;
 }
-#instagram .picture cite {
-	float: right;
-	line-height: 25px;
-}
+
+

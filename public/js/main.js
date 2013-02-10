@@ -282,17 +282,21 @@ function processTweet(tweet){
   }
   // Build the html string for the current tweet
   var statusUrl = 'http://www.twitter.com/' + tweet.from_user + '/status/' + tweet.id;
-  var qrUrl = 'http://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(statusUrl) + '&size=80x80';
-  var tweetHtml = '<div class="tweet" id="' + tweet.id + '">';
-  tweetHtml += '<div class="userInfo">';
-  tweetHtml += '<img src="' + tweet.profile_image_url.replace('_normal', '_bigger') + '" class="tweetImage">';
-  tweetHtml += '<div class="tweetStatus">' + linkify(tweet) + '</div>';
-  tweetHtml += '<cite class="timeago" title="' + tweet.created_at + '"></cite>';
-  tweetHtml += '</div>';
-  if(tweet.entities.media || (tweet.entities.urls && tweet.entities.urls.length)) {
-    tweetHtml    += '<img src="' + qrUrl + '" class="tweetQR">';  
-  }
-
+  $('<div>')
+    .addClass('tweet')
+    .attr('id', tweet.id)
+    .append($('<div>')
+      .addClass('userInfo')
+      .append($('<img>')
+        .attr('src', tweet.profile_image_url.replace('_normal', '_bigger'))
+        .addClass('userImage'))
+      .append($('<div>')
+        .addClass('caption')
+        .html(linkify(tweet)))
+      .append($('<cite>')
+        .addClass('timeago')
+        .attr('title', tweet.created_at)))
+    .appendTo('#twitter .scroll-wrap')
 
   if (tweet.entities.media){
     //grab first image
@@ -318,7 +322,6 @@ function processTweet(tweet){
       }
     });
   }
-  $('#twitter .scroll-wrap').append(tweetHtml);
 }
 
 function scrollTwitter() {
@@ -426,7 +429,7 @@ function updateFoursquare() {
 
             //size title
             var ratio =  26 / $('h2', div).text().length;
-            if(ratio < 1) {
+            if(ratio <= 1) {
               $('h2', div).css('font-size', Math.round(ratio*10000)/100 + '%');
             }
           }
@@ -451,21 +454,26 @@ function scrollFoursquare() {
     });
   }
 }
-
 function updateInstagram() {
   $.getJSON('/api/instagram.json', function(data) {
     if(data.length) {
-      $('#instagram .picture').remove();
+      $('#instagram .instagram').remove();
       data.forEach(function(picture) {
         var createdAt = new Date(picture.created_time*1000);
         if(new Date().getTime() - createdAt.getTime() < 60*24*60*60*1000 ) {
           $('<div>')
-            .addClass('picture')
+            .addClass('instagram')
             .append($('<img>')
+              .addClass('instagramImage')
               .attr('src', picture.images.standard_resolution.url))
             .append($('<div>')
               .addClass('userInfo')
-              .html(picture.user.full_name)
+              .append($('<img>')
+                .attr('src', picture.user.profile_picture)
+                .addClass('userImage'))
+              .append($('<div>')
+                .addClass('caption')
+                .html((picture.caption) ? picture.caption.text : ''))
               .append($('<cite>')
                 .addClass('timeago')
                 .attr('title', createdAt.toISOString())))
@@ -478,7 +486,7 @@ function updateInstagram() {
 }
 
 function scrollInstagram() {
-  var first = $('#instagram .scroll-wrap .picture:first-child');
+  var first = $('#instagram .scroll-wrap .instagram:first-child');
   if(isPi) {
     $('#instagram .scroll-wrap').append(first);
   } else {
