@@ -400,32 +400,33 @@ function updateFoursquare() {
     if(data && data.response) {
       data.response.recent.forEach(function(checkin) {
         if(users.indexOf(parseInt(checkin.user.id, 10)) != -1) {
-          var div = $('#foursquare_' + checkin.user.id),
-              createdAt = new Date(checkin.createdAt * 1000);
+          var createdAt = new Date(checkin.createdAt * 1000);
+          //only show checkins newer than one day
           if(new Date().getTime() - createdAt.getTime() < 24*60*60*1000 ) {
-            //only show checkins newer than one day
+            var div = $('#foursquare_' + checkin.user.id);
             if(!div.length) {
               div = $('<a>')
                 .attr('id', 'foursquare_' + checkin.user.id)
                 .addClass('foursquare')
                 .width(width)
-                .append('<img>')
-                .append('<h2>')
-                .append($('<div>')
-                  .addClass('shout'))
-                .append('<cite>')
                 .appendTo('#foursquare .scroll-wrap');
             }
-            $(div)
-              .attr('href', checkin.venue.canonicalUrl);
-            $('h2', div)
-              .html(checkin.venue.name);
-            $('img', div)
-              .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix);
-            $('.shout', div)
-              .html(checkin.shout);
-            $('cite', div)
-              .attr('title', createdAt.toISOString());
+
+            div
+              .empty()
+              .attr('href', checkin.venue.canonicalUrl)
+              .append($('<img>')
+                .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix))
+              .append($('<div>')
+                .addClass('userName')
+                .text(checkin.user.firstName))
+              .append($('<h2>')
+                .html(checkin.venue.name))
+              .append($('<div>')
+                .addClass('shout')
+                .html(checkin.shout))
+              .append($('<cite>')
+                .attr('title', createdAt.toISOString()));
 
             //size title
             var ratio =  26 / $('h2', div).text().length;
@@ -471,6 +472,9 @@ function updateInstagram() {
               .append($('<img>')
                 .attr('src', picture.user.profile_picture)
                 .addClass('userImage'))
+              .append($('<div>')
+                .text(picture.user.full_name)
+                .addClass('userName'))
               .append($('<div>')
                 .addClass('caption')
                 .html((picture.caption) ? picture.caption.text : ''))
