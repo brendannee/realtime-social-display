@@ -460,7 +460,7 @@ function updateInstagram() {
       $('#instagram .instagram').remove();
       data.forEach(function(picture) {
         var createdAt = new Date(picture.created_time*1000);
-        if(new Date().getTime() - createdAt.getTime() < 60*24*60*60*1000 ) {
+        if(new Date().getTime() - createdAt.getTime() < 30*24*60*60*1000 ) {
           $('<div>')
             .addClass('instagram')
             .append($('<img>')
