@@ -215,7 +215,7 @@ function updateTwitter(){
       since_id = (tweet.id > since_id) ? tweet.id : since_id;
 
       //ignore @replies and blank tweets
-      if(tweet.text == undefined || tweet.id == since_id || tweet.to_user) {
+      if(tweet.text == undefined || (tweet.in_reply_to_user_id && tweet.in_reply_to_screen_name != 'pwndepot' ) || (tweet.text[0] == '@' && tweet.text.substring(0, 9) != '@pwndepot')) {
         return;
       }
       // Build the html string for the current tweet
