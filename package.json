@@ -3,12 +3,12 @@
   "author": "Brendan Nee <me@bn.ee>",
   "version": "0.0.1",
   "dependencies": {
-      "express": "> 3"
-    , "connect": ">=2.7.x"
-    , "async": ">= 0.1.22"
-    , "underscore": ">= 1.4.3"
-    , "moment": ">=1.7.2"
-    , "request": ">=2.12.0"
+      "express": "= 3.1.x"
+    , "connect": "= 2.7.x"
+    , "async": "= 0.2.x"
+    , "underscore": "= 1.4.x"
+    , "moment": "= 2.0.x"
+    , "request": "=2.16.0"
   },
   "main": "index",
   "engines": {
