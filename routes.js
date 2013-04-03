@@ -35,15 +35,19 @@ module.exports = function routes(app){
         cb();
       });
     }, function(e) {
-      res.json(_.sortBy(pictures, function(picture){ return -1 * picture.created_time; }));
+      res.json(_.sortBy(pictures, function(picture){ 
+        if(!picture) {
+          return;   
+        }
+        return -1 * picture.created_time;
+      }));
     });
 
   });
 
   //Nothing specified
-  app.all('*', function notFound(req, res) {
-    res.send('Not Found');
+  app.use(function(req, res, next){
+    res.send(404, 'Sorry cant find that!');
   });
-
 }
 
