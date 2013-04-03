@@ -169,39 +169,6 @@ var since_id = 0,
   },
 ];
 
-var usernames = [
-    'from:pwndepot',
-    '@pwndepot',
-    'from:brendannee',
-    'from:lstonehill',
-    'from:_nw_',
-    'from:lweite',
-    'from:woeismatt',
-    'from:cpetzold',
-    'from:rooferford',
-    'from:rauchg',
-    'from:halfhenry',
-    'from:stevebice',
-    'from:w01fe',
-    'from:qago',
-    'from:blinktaginc',
-    'from:keussen',
-    'from:dduugg',
-    'from:juliebadoolie',
-    'from:mgougherty',
-    'from:jkeussen',
-    'from:carolinetien',
-    'from:trucy',
-    'from:jedsez',
-    'from:gunniho',
-    'from:omalleycali',
-    'from:jedsez',
-    'from:jeremyaaronlong',
-    'from:Talyn',
-    'from:cedickie',
-    'from:IKusturica',
-    'from:betula82'
-   ];
 
 var linkify = (function() {
   var replaceSubstr = function(text, i, j, substr) {
@@ -242,87 +209,65 @@ var linkify = (function() {
 })();
 
 function updateTwitter(){
-  var batchSize = 20,
-      batchCount = Math.ceil(usernames.length / batchSize),
-      idx = 0,
-      responseCount = 0,
-      tweets = [];
-  while(idx < batchCount) {
-    getTweets(usernames.slice((idx * batchSize), ((idx+1) * batchSize)), function(results){
-      tweets = tweets.concat(results);
-      ++responseCount;
-      if(responseCount >= batchCount){
-        //processTweets
-        tweets.forEach(processTweet);
-        $('#twitter .timeago').timeago();
+  $.getJSON('/api/twitter.json', {since_id: since_id}, function(data) {
+    data.forEach(function(tweet) {
+      //Update 'since_id' if larger
+      since_id = (tweet.id > since_id) ? tweet.id : since_id;
+
+      //ignore @replies and blank tweets
+      if(tweet.text == undefined || tweet.id == since_id || tweet.to_user) {
+        return;
+      }
+      // Build the html string for the current tweet
+      var statusUrl = 'http://www.twitter.com/' + tweet.from_user + '/status/' + tweet.id;
+      $('<div>')
+        .addClass('tweet')
+        .attr('id', tweet.id)
+        .append($('<div>')
+          .addClass('userInfo')
+          .append($('<img>')
+            .attr('src', tweet.user.profile_image_url.replace('_normal', '_bigger'))
+            .addClass('userImage'))
+          .append($('<div>')
+            .addClass('userName')
+            .text(tweet.user.name))
+          .append($('<div>')
+            .addClass('caption')
+            .html(linkify(tweet)))
+          .append($('<cite>')
+            .addClass('timeago')
+            .attr('title', tweet.created_at)))
+        .appendTo('#twitter .scroll-wrap')
+
+      if (tweet.entities.media){
+        //grab first image
+        var height = $('#twitter').width() / tweet.entities.media[0].sizes.medium.w * tweet.entities.media[0].sizes.medium.h;
+        $('#' + tweet.id)
+          .css('background-image', 'url('+tweet.entities.media[0].media_url+')')
+          .height(height)
+          .addClass('background');
+      } else if (tweet.entities.urls && tweet.entities.urls.length) {
+        //use embed.ly to get image from first URL
+        var embedlyOptions = {
+            key: 'a264d15f7a9d4241bf7a216c6305c1fc'
+          , url: tweet.entities.urls[0].expanded_url
+          , maxwidth: 600
+        }
+        $.getJSON('http://api.embed.ly/1/oembed?callback=?', embedlyOptions, function(data){
+          if(data.thumbnail_url){
+            var height = $('#twitter').width() / data.thumbnail_width * data.thumbnail_height;
+            $('#' + tweet.id)
+              .css('background-image', 'url('+data.thumbnail_url+')')
+              .height(height)
+              .addClass('background');
+          }
+        });
       }
     });
-    ++idx;
-  }
-}
-
-function getTweets(users, cb){
-  var twitter_api_url = 'http://search.twitter.com/search.json';
-
-  //Build URL using 'since_id' to find only new tweets
-  var queryUrl = twitter_api_url + '?callback=?&rpp=100&include_entities=true&since_id=' + since_id + '&q=' + users.join('+OR+');
-
-  $.getJSON(queryUrl, function(data) {
-    cb(data.results || null);
+    $('#twitter .timeago').timeago();
   });
 }
 
-function processTweet(tweet){
-  //Update 'since_id' if larger
-  since_id = (tweet.id > since_id) ? tweet.id : since_id;
-
-  //ignore @replies and blank tweets
-  if(tweet.text == undefined || tweet.id == since_id || tweet.to_user) {
-    return;
-  }
-  // Build the html string for the current tweet
-  var statusUrl = 'http://www.twitter.com/' + tweet.from_user + '/status/' + tweet.id;
-  $('<div>')
-    .addClass('tweet')
-    .attr('id', tweet.id)
-    .append($('<div>')
-      .addClass('userInfo')
-      .append($('<img>')
-        .attr('src', tweet.profile_image_url.replace('_normal', '_bigger'))
-        .addClass('userImage'))
-      .append($('<div>')
-        .addClass('caption')
-        .html(linkify(tweet)))
-      .append($('<cite>')
-        .addClass('timeago')
-        .attr('title', tweet.created_at)))
-    .appendTo('#twitter .scroll-wrap')
-
-  if (tweet.entities.media){
-    //grab first image
-    var height = $('#twitter').width() / tweet.entities.media[0].sizes.orig.w * tweet.entities.media[0].sizes.orig.h;
-    $('#' + tweet.id)
-      .css('background-image', 'url('+tweet.entities.media[0].media_url+')')
-      .height(height)
-      .addClass('background');
-  } else if (tweet.entities.urls && tweet.entities.urls.length) {
-    //use embed.ly to get image from first URL
-    var embedlyOptions = {
-        key: 'a264d15f7a9d4241bf7a216c6305c1fc'
-      , url: tweet.entities.urls[0].expanded_url
-      , maxwidth: 600
-    }
-    $.getJSON('http://api.embed.ly/1/oembed?callback=?', embedlyOptions, function(data){
-      if(data.thumbnail_url){
-        var height = $('#twitter').width() / data.thumbnail_width * data.thumbnail_height;
-        $('#' + tweet.id)
-          .css('background-image', 'url('+data.thumbnail_url+')')
-          .height(height)
-          .addClass('background');
-      }
-    });
-  }
-}
 
 function scrollTwitter() {
   var first = $('#twitter .tweet:first-child');
@@ -335,8 +280,6 @@ function scrollTwitter() {
         .css('top', 0);
     });
   }
-
-  
 }
 
 function updatePlaces(){

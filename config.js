@@ -44,5 +44,7 @@ module.exports = function(app){
     app.set('foursquareToken', foursquareToken);
     var instagramToken = process.env.INSTAGRAM_TOKEN || keys.instagramToken;
     app.set('instagramToken', instagramToken);
+    var twitterToken = process.env.TWITTER_TOKEN || keys.twitterToken;
+    app.set('twitterToken', twitterToken);
   })
 }

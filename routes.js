@@ -5,6 +5,67 @@ var async = require('async')
 
 
 module.exports = function routes(app){
+  app.get('/api/twitter.json', function(req, res){
+    var usernames = [
+        'from:pwndepot',
+        '@pwndepot',
+        'from:brendannee',
+        'from:lstonehill',
+        'from:_nw_',
+        'from:lweite',
+        'from:woeismatt',
+        'from:cpetzold',
+        'from:rooferford',
+        'from:rauchg',
+        'from:halfhenry',
+        'from:stevebice',
+        'from:w01fe',
+        'from:qago',
+        'from:blinktaginc',
+        'from:keussen',
+        'from:dduugg',
+        'from:juliebadoolie',
+        'from:mgougherty',
+        'from:jkeussen',
+        'from:carolinetien',
+        'from:trucy',
+        'from:jedsez',
+        'from:gunniho',
+        'from:omalleycali',
+        'from:jedsez',
+        'from:jeremyaaronlong',
+        'from:Talyn',
+        'from:cedickie',
+        'from:IKusturica',
+        'from:betula82'
+      ];
+    var userCount = 0,
+        userIncrement = 20,
+        tweets = [];
+    async.whilst(function(){ return (userCount <= usernames.length); },
+      function(cb){
+        request.get({
+            url: 'https://api.twitter.com/1.1/search/tweets.json'
+          , qs: {
+                count: 100
+              , include_entities: true
+              , result_type: 'recent'
+              , since_id: req.query.since_id || 0
+              , q: usernames.slice(userCount, (userCount + userIncrement)).join(' OR ')
+            }
+          , headers: {Authorization: 'Bearer ' + app.set('twitterToken')}
+          , json: true
+        }, function(e, response, body) {
+          try {
+            tweets = tweets.concat(body.statuses);
+          } catch(e) { }
+          cb();
+        });
+        userCount += userIncrement;
+      }, function(e, result) {
+        res.json(tweets);
+    });
+  });
 
   app.get('/api/foursquare.json', function(req, res){
     request.get({
