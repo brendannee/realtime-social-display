@@ -249,7 +249,7 @@ function updateTwitter(){
       } else if (tweet.entities.urls && tweet.entities.urls.length) {
         //use embed.ly to get image from first URL
         var embedlyOptions = {
-            key: 'a264d15f7a9d4241bf7a216c6305c1fc'
+            key: '991322aef9ba4e68b66546387e0b216d'
           , url: tweet.entities.urls[0].expanded_url
           , maxwidth: 600
         }
