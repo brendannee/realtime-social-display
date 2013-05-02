@@ -4,7 +4,9 @@ var express = require('express')
   
 try {
   var keys = require('./keys');
-} catch(e) {}
+} catch(e) {
+  var keys = {};
+}
 
 
 module.exports = function(app){

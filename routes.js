@@ -6,6 +6,10 @@ var async = require('async')
 
 module.exports = function routes(app){
   app.get('/api/twitter.json', function(req, res){
+    if(!app.set('twitterToken')) { 
+      console.error('No Twitter Token defined.');
+      res.json({});
+    }
     var usernames = [
         'from:pwndepot',
         '@pwndepot',
@@ -68,6 +72,10 @@ module.exports = function routes(app){
   });
 
   app.get('/api/foursquare.json', function(req, res){
+    if(!app.set('foursquareToken')) { 
+      console.error('No Foursquare Token defined.');
+      res.json({});
+    }
     request.get({
         url: 'https://api.foursquare.com/v2/checkins/recent'
       , qs: {
@@ -82,6 +90,10 @@ module.exports = function routes(app){
   });
 
   app.get('/api/instagram.json', function(req, res){
+    if(!app.set('instagramToken')) { 
+      console.error('No Instagram Token defined.');
+      res.json({});
+    }
     var users = [3277, 3625059, 7968995, 23699909, 1969470, 4335886, 14683913, 403770, 8625420, 728636, 178231050, 263428, 201765534, 194565073, 199575452, 615058, 184294671, 32411825, 36704790, 39558678, 5311719, 30921174, 30926690],
         pictures = [];
     async.forEach(users, function(user, cb){
