@@ -403,6 +403,7 @@ function updateInstagram() {
     if(data.length) {
       $('#instagram .instagram').remove();
       data.forEach(function(picture) {
+        if(!picture) { return }
         var createdAt = new Date(picture.created_time*1000);
         if(new Date().getTime() - createdAt.getTime() < 30*24*60*60*1000 ) {
           $('<div>')
