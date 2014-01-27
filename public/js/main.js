@@ -209,63 +209,67 @@ var linkify = (function() {
 })();
 
 function updateTwitter(){
-  $.getJSON('/api/twitter.json', {since_id: since_id}, function(data) {
-    data.forEach(function(tweet) {
-      //Update 'since_id' if larger
-      since_id = (tweet.id > since_id) ? tweet.id : since_id;
+  try {
+    $.getJSON('/api/twitter', {since_id: since_id}, function(data) {
+      data.forEach(function(tweet) {
+        //Update 'since_id' if larger
+        since_id = (tweet.id > since_id) ? tweet.id : since_id;
 
-      //ignore @replies and blank tweets
-      if(tweet.text == undefined || (tweet.in_reply_to_user_id && tweet.in_reply_to_screen_name != 'pwndepot' ) || (tweet.text[0] == '@' && tweet.text.substring(0, 9) != '@pwndepot')) {
-        return;
-      }
-      // Build the html string for the current tweet
-      var statusUrl = 'http://www.twitter.com/' + tweet.from_user + '/status/' + tweet.id;
-      $('<div>')
-        .addClass('tweet')
-        .attr('id', tweet.id)
-        .append($('<div>')
-          .addClass('userInfo')
-          .append($('<img>')
-            .attr('src', tweet.user.profile_image_url.replace('_normal', '_bigger'))
-            .addClass('userImage'))
-          .append($('<div>')
-            .addClass('userName')
-            .text(tweet.user.name))
-          .append($('<div>')
-            .addClass('caption')
-            .html(linkify(tweet)))
-          .append($('<cite>')
-            .addClass('timeago')
-            .attr('title', tweet.created_at)))
-        .appendTo('#twitter .scroll-wrap')
-
-      if (tweet.entities.media){
-        //grab first image
-        var height = $('#twitter').width() / tweet.entities.media[0].sizes.medium.w * tweet.entities.media[0].sizes.medium.h;
-        $('#' + tweet.id)
-          .css('background-image', 'url('+tweet.entities.media[0].media_url+')')
-          .height(height)
-          .addClass('background');
-      } else if (tweet.entities.urls && tweet.entities.urls.length) {
-        //use embed.ly to get image from first URL
-        var embedlyOptions = {
-            key: '991322aef9ba4e68b66546387e0b216d'
-          , url: tweet.entities.urls[0].expanded_url
-          , maxwidth: 600
+        //ignore @replies and blank tweets
+        if(tweet.text == undefined || (tweet.in_reply_to_user_id && tweet.in_reply_to_screen_name != 'pwndepot' ) || (tweet.text[0] == '@' && tweet.text.substring(0, 9) != '@pwndepot')) {
+          return;
         }
-        $.getJSON('http://api.embed.ly/1/oembed?callback=?', embedlyOptions, function(data){
-          if(data.thumbnail_url){
-            var height = $('#twitter').width() / data.thumbnail_width * data.thumbnail_height;
-            $('#' + tweet.id)
-              .css('background-image', 'url('+data.thumbnail_url+')')
-              .height(height)
-              .addClass('background');
+        // Build the html string for the current tweet
+        var statusUrl = 'http://www.twitter.com/' + tweet.from_user + '/status/' + tweet.id;
+        $('<div>')
+          .addClass('tweet')
+          .attr('id', tweet.id)
+          .append($('<div>')
+            .addClass('userInfo')
+            .append($('<img>')
+              .attr('src', tweet.user.profile_image_url.replace('_normal', '_bigger'))
+              .addClass('userImage'))
+            .append($('<div>')
+              .addClass('userName')
+              .text(tweet.user.name))
+            .append($('<div>')
+              .addClass('caption')
+              .html(linkify(tweet)))
+            .append($('<cite>')
+              .addClass('timeago')
+              .attr('title', tweet.created_at)))
+          .appendTo('#twitter .scroll-wrap')
+
+        if (tweet.entities.media){
+          //grab first image
+          var height = $('#twitter').width() / tweet.entities.media[0].sizes.medium.w * tweet.entities.media[0].sizes.medium.h;
+          $('#' + tweet.id)
+            .css('background-image', 'url('+tweet.entities.media[0].media_url+')')
+            .height(height)
+            .addClass('background');
+        } else if (tweet.entities.urls && tweet.entities.urls.length) {
+          //use embed.ly to get image from first URL
+          var embedlyOptions = {
+              key: '991322aef9ba4e68b66546387e0b216d'
+            , url: tweet.entities.urls[0].expanded_url
+            , maxwidth: 600
           }
-        });
-      }
+          $.getJSON('http://api.embed.ly/1/oembed?callback=?', embedlyOptions, function(data){
+            if(data.thumbnail_url){
+              var height = $('#twitter').width() / data.thumbnail_width * data.thumbnail_height;
+              $('#' + tweet.id)
+                .css('background-image', 'url('+data.thumbnail_url+')')
+                .height(height)
+                .addClass('background');
+            }
+          });
+        }
+      });
+      $('#twitter .timeago').timeago();
     });
-    $('#twitter .timeago').timeago();
-  });
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 
@@ -283,106 +287,114 @@ function scrollTwitter() {
 }
 
 function updatePlaces(){
-  var currentTime = new Date(),
-      currentMinutes = currentTime.getMinutes(),
-      currentHours = currentTime.getHours(),
-      currentDay = currentTime.getDay();
+  try {
+    var currentTime = new Date(),
+        currentMinutes = currentTime.getMinutes(),
+        currentHours = currentTime.getHours(),
+        currentDay = currentTime.getDay();
 
-  if(currentHours < 4){
-    currentHours += 24;
-    currentDay -= 1;
+    if(currentHours < 4){
+      currentHours += 24;
+      currentDay -= 1;
+    }
+    nearby.forEach(function(place){
+      var divName = place.name.replace(/[!\"#$%&'\(\)\*\+,\.\/:;<=>\?\@\[\\\]\^`\{\|\}~\s]/g, ''),
+          div = $('#' + divName),
+          hours = place.hours.all || place.hours[currentDay],
+          status;
+
+      if(!div.length) {
+        var div = $('<div>')
+          .addClass('place')
+          .attr('id', divName)
+          .append($('<div>')
+            .addClass('status'))
+          .append($('<a>')
+            .addClass('storeName')
+            .attr('href', place.url)
+            .html(place.name))
+          .append($('<span>')
+            .addClass('countdown'))
+          .appendTo('#nearby');
+      }
+      if(hours[1] - hours[0] == 24) {
+        status = 'open';
+      } else if(currentHours < hours[0] || currentHours >= hours[1]) {
+        status = 'closed';
+      } else if(currentHours == (hours[1] - 1) ) {
+        status = 'closing';
+      } else {
+        status = 'open';
+      }
+      $(div).attr('data-status', status);
+      $('.countdown', div).html(((currentMinutes - 60) * -1) + " min");
+    });
+
+    $('#nearby [data-status="open"]').each(function(idx, item){
+      $('#nearby').append(item);
+    });
+    $('#nearby [data-status="closing"]').each(function(idx, item){
+      $('#nearby').append(item);
+    });
+    $('#nearby [data-status="closed"]').each(function(idx, item){
+      $('#nearby').append(item);
+    });
+  } catch(e) {
+    console.log(e);
   }
-  nearby.forEach(function(place){
-    var divName = place.name.replace(/[!\"#$%&'\(\)\*\+,\.\/:;<=>\?\@\[\\\]\^`\{\|\}~\s]/g, ''),
-        div = $('#' + divName),
-        hours = place.hours.all || place.hours[currentDay],
-        status;
-
-    if(!div.length) {
-      var div = $('<div>')
-        .addClass('place')
-        .attr('id', divName)
-        .append($('<div>')
-          .addClass('status'))
-        .append($('<a>')
-          .addClass('storeName')
-          .attr('href', place.url)
-          .html(place.name))
-        .append($('<span>')
-          .addClass('countdown'))
-        .appendTo('#nearby');
-    }
-    if(hours[1] - hours[0] == 24) {
-      status = 'open';
-    } else if(currentHours < hours[0] || currentHours >= hours[1]) {
-      status = 'closed';
-    } else if(currentHours == (hours[1] - 1) ) {
-      status = 'closing';
-    } else {
-      status = 'open';
-    }
-    $(div).attr('data-status', status);
-    $('.countdown', div).html(((currentMinutes - 60) * -1) + " min");
-  });
-
-  $('#nearby [data-status="open"]').each(function(idx, item){
-    $('#nearby').append(item);
-  });
-  $('#nearby [data-status="closing"]').each(function(idx, item){
-    $('#nearby').append(item);
-  });
-  $('#nearby [data-status="closed"]').each(function(idx, item){
-    $('#nearby').append(item);
-  });
 }
 
 function updateFoursquare() {
-  $.getJSON('/api/foursquare.json', function(data) {
-    var users=[4103624, 2045886, 2562440, 76208, 1244684, 476418, 103618, 34602, 21774118, 39723051, 507909, 96339, 19462501, 4077951, 45948];
-    var width = $(window).width() / 3;
-    if(data && data.response) {
-      data.response.recent.forEach(function(checkin) {
-        if(users.indexOf(parseInt(checkin.user.id, 10)) != -1) {
-          var createdAt = new Date(checkin.createdAt * 1000);
-          //only show checkins newer than one day
-          if(new Date().getTime() - createdAt.getTime() < 24*60*60*1000 ) {
-            var div = $('#foursquare_' + checkin.user.id);
-            if(!div.length) {
-              div = $('<a>')
-                .attr('id', 'foursquare_' + checkin.user.id)
-                .addClass('foursquare')
-                .width(width)
-                .appendTo('#foursquare .scroll-wrap');
-            }
+  try {
+    $.getJSON('/api/foursquare', function(data) {
+      var users=[4103624, 2045886, 2562440, 76208, 1244684, 476418, 103618, 34602, 21774118, 39723051, 507909, 96339, 19462501, 4077951, 45948];
+      var width = $(window).width() / 3;
+      if(data && data.response) {
+        data.response.recent.forEach(function(checkin) {
+          if(users.indexOf(parseInt(checkin.user.id, 10)) != -1) {
+            var createdAt = new Date(checkin.createdAt * 1000);
+            //only show checkins newer than one day
+            if(new Date().getTime() - createdAt.getTime() < 24*60*60*1000 ) {
+              var div = $('#foursquare_' + checkin.user.id);
+              if(!div.length) {
+                div = $('<a>')
+                  .attr('id', 'foursquare_' + checkin.user.id)
+                  .addClass('foursquare')
+                  .width(width)
+                  .appendTo('#foursquare .scroll-wrap');
+              }
 
-            div
-              .empty()
-              .attr('href', checkin.venue.canonicalUrl)
-              .append($('<img>')
-                .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix))
-              .append($('<div>')
-                .addClass('userName')
-                .text(checkin.user.firstName))
-              .append($('<h2>')
-                .html(checkin.venue.name))
-              .append($('<div>')
-                .addClass('shout')
-                .html(checkin.shout))
-              .append($('<cite>')
-                .attr('title', createdAt.toISOString()));
+              div
+                .empty()
+                .attr('href', checkin.venue.canonicalUrl)
+                .append($('<img>')
+                  .attr('src', checkin.user.photo.prefix + '100x100' + checkin.user.photo.suffix))
+                .append($('<div>')
+                  .addClass('userName')
+                  .text(checkin.user.firstName))
+                .append($('<h2>')
+                  .html(checkin.venue.name))
+                .append($('<div>')
+                  .addClass('shout')
+                  .html(checkin.shout))
+                .append($('<cite>')
+                  .attr('title', createdAt.toISOString()));
 
-            //size title
-            var ratio =  26 / $('h2', div).text().length;
-            if(ratio <= 1) {
-              $('h2', div).css('font-size', Math.round(ratio*10000)/100 + '%');
+              //size title
+              var ratio =  26 / $('h2', div).text().length;
+              if(ratio <= 1) {
+                $('h2', div).css('font-size', Math.round(ratio*10000)/100 + '%');
+              }
             }
           }
-        }
-        
-      });
-      $('#foursquare cite').timeago();
-    }
-  });
+
+        });
+        $('#foursquare cite').timeago();
+      }
+    });
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 
@@ -398,39 +410,45 @@ function scrollFoursquare() {
     });
   }
 }
+
+
 function updateInstagram() {
-  $.getJSON('/api/instagram.json', function(data) {
-    if(data.length) {
-      $('#instagram .instagram').remove();
-      data.forEach(function(picture) {
-        if(!picture) { return }
-        var createdAt = new Date(picture.created_time*1000);
-        if(new Date().getTime() - createdAt.getTime() < 30*24*60*60*1000 ) {
-          $('<div>')
-            .addClass('instagram')
-            .append($('<img>')
-              .addClass('instagramImage')
-              .attr('src', picture.images.standard_resolution.url))
-            .append($('<div>')
-              .addClass('userInfo')
+  try {
+    $.getJSON('/api/instagram', function(data) {
+      if(data.length) {
+        $('#instagram .instagram').remove();
+        data.forEach(function(picture) {
+          if(!picture) { return }
+          var createdAt = new Date(picture.created_time*1000);
+          if(new Date().getTime() - createdAt.getTime() < 30*24*60*60*1000 ) {
+            $('<div>')
+              .addClass('instagram')
               .append($('<img>')
-                .attr('src', picture.user.profile_picture)
-                .addClass('userImage'))
+                .addClass('instagramImage')
+                .attr('src', picture.images.standard_resolution.url))
               .append($('<div>')
-                .text(picture.user.full_name)
-                .addClass('userName'))
-              .append($('<div>')
-                .addClass('caption')
-                .html((picture.caption) ? picture.caption.text : ''))
-              .append($('<cite>')
-                .addClass('timeago')
-                .attr('title', createdAt.toISOString())))
-            .appendTo('#instagram .scroll-wrap');
-        }
-      });
-      $('#instagram .timeago').timeago()
-    }
-  });
+                .addClass('userInfo')
+                .append($('<img>')
+                  .attr('src', picture.user.profile_picture)
+                  .addClass('userImage'))
+                .append($('<div>')
+                  .text(picture.user.full_name)
+                  .addClass('userName'))
+                .append($('<div>')
+                  .addClass('caption')
+                  .html((picture.caption) ? picture.caption.text : ''))
+                .append($('<cite>')
+                  .addClass('timeago')
+                  .attr('title', createdAt.toISOString())))
+              .appendTo('#instagram .scroll-wrap');
+          }
+        });
+        $('#instagram .timeago').timeago()
+      }
+    });
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 function scrollInstagram() {
@@ -461,7 +479,7 @@ $(function(){
   updateFoursquare();
   setInterval(updateFoursquare, 300000);
 
-  //update Instagram every 30 minutes 
+  //update Instagram every 30 minutes
   updateInstagram();
   setInterval(updateInstagram, 1800000);
 
@@ -470,5 +488,5 @@ $(function(){
 
   //reload browser every 6 hours
   setInterval(function(){ window.location.reload(true); }, 21600000);
-  
+
 });

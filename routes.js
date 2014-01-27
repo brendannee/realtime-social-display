@@ -5,8 +5,8 @@ var async = require('async')
 
 
 module.exports = function routes(app){
-  app.get('/api/twitter.json', function(req, res){
-    if(!app.set('twitterToken')) { 
+  app.get('/api/twitter', function(req, res){
+    if(!app.set('twitterToken')) {
       console.error('No Twitter Token defined.');
       res.json({});
     }
@@ -41,7 +41,8 @@ module.exports = function routes(app){
         'from:Talyn',
         'from:cedickie',
         'from:IKusturica',
-        'from:betula82'
+        'from:betula82',
+        'from:kfarr'
       ];
     var userCount = 0,
         userIncrement = 20,
@@ -71,8 +72,8 @@ module.exports = function routes(app){
     });
   });
 
-  app.get('/api/foursquare.json', function(req, res){
-    if(!app.set('foursquareToken')) { 
+  app.get('/api/foursquare', function(req, res){
+    if(!app.set('foursquareToken')) {
       console.error('No Foursquare Token defined.');
       res.json({});
     }
@@ -89,8 +90,8 @@ module.exports = function routes(app){
     });
   });
 
-  app.get('/api/instagram.json', function(req, res){
-    if(!app.set('instagramToken')) { 
+  app.get('/api/instagram', function(req, res){
+    if(!app.set('instagramToken')) {
       console.error('No Instagram Token defined.');
       res.json({});
     }
@@ -108,9 +109,9 @@ module.exports = function routes(app){
         cb();
       });
     }, function(e) {
-      res.json(_.sortBy(pictures, function(picture){ 
+      res.json(_.sortBy(pictures, function(picture){
         if(!picture) {
-          return;   
+          return;
         }
         return -1 * picture.created_time;
       }));
