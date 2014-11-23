@@ -1,5 +1,5 @@
 var since_id = 0,
-    isPi = (navigator.userAgent.indexOf("armv6") != -1),
+    isPi = (navigator.userAgent.indexOf("armv6") != -1 || navigator.userAgent.indexOf("Midori") != -1),
     nearby = [
   {
       name: 'Foodsco'
