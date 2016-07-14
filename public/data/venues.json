@@ -1,0 +1,145 @@
+[{
+    "name": "Foodsco",
+    "url": "http://www.yelp.com/biz/foods-co-san-francisco",
+    "hours": {
+        "all": [6, 25]
+    }
+}, {
+    "name": "Walzwerk",
+    "url": "http://www.yelp.com/biz/walzwerk-san-francisco",
+    "hours": {
+        "0": [17.5, 22],
+        "1": [0, 0],
+        "2": [17.5, 22],
+        "3": [17.5, 22],
+        "4": [17.5, 22],
+        "5": [17.5, 22],
+        "6": [17.5, 22]
+    }
+}, {
+    "name": "Little Star",
+    "url": "http://www.yelp.com/biz/little-star-pizza-san-francisco-2",
+    "hours": {
+        "0": [11.5, 22],
+        "1": [11.5, 22],
+        "2": [11.5, 22],
+        "3": [11.5, 22],
+        "4": [11.5, 22],
+        "5": [11.5, 23],
+        "6": [11.5, 23]
+    }
+}, {
+    "name": "The Sycamore",
+    "url": "http://www.yelp.com/biz/the-sycamore-san-francisco",
+    "hours": {
+        "0": [12, 22],
+        "1": [12, 22],
+        "2": [12, 22],
+        "3": [12, 22],
+        "4": [12, 22],
+        "5": [12, 24],
+        "6": [12, 24]
+    }
+}, {
+    "name": "Nihon Whiskey Lounge",
+    "url": "http://www.yelp.com/biz/nihon-whisky-lounge-san-francisco",
+    "hours": {
+        "0": [17.5, 25.5],
+        "1": [0, 0],
+        "2": [17.5, 25.5],
+        "3": [17.5, 25.5],
+        "4": [17.5, 25.5],
+        "5": [17.5, 25.5],
+        "6": [17.5, 25.5]
+    }
+}, {
+    "name": "Taqueria Los Coyotes",
+    "url": "http://www.yelp.com/biz/taqueria-los-coyotes-san-francisco",
+    "hours": {
+        "0": [9, 24],
+        "1": [9.5, 22.5],
+        "2": [9.5, 22.5],
+        "3": [9.5, 22.5],
+        "4": [9.5, 22.5],
+        "5": [9.5, 25.5],
+        "6": [9, 25.5]
+    }
+}, {
+    "name": "The Little Chihuahua",
+    "url": "http://www.yelp.com/biz/the-little-chihuahua-san-francisco-4",
+    "hours": {
+        "all": [11, 22]
+    }
+}, {
+    "name": "Monk's Kettle",
+    "url": "http://www.yelp.com/biz/the-monks-kettle-san-francisco",
+    "hours": {
+        "all": [12, 26]
+    }
+}, {
+    "name": "The Wooden Nickel",
+    "url": "https://www.yelp.com/biz/the-wooden-nickel-san-francisco",
+    "hours": {
+        "all": [14, 26]
+    }
+}, {
+    "name": "Rainbow Grocery",
+    "url": "http://www.yelp.com/biz/the-monks-kettle-san-francisco",
+    "hours": {
+        "all": [9, 21]
+    }
+}, {
+    "name": "Pica Pica",
+    "url": "http://www.yelp.com/biz/pica-pica-maize-kitchen-san-francisco",
+    "hours": {
+        "all": [11, 22]
+    }
+}, {
+    "name": "Dear Mom",
+    "url": "http://www.yelp.com/biz/pica-pica-maize-kitchen-san-francisco",
+    "hours": {
+        "0": [11.5, 24],
+        "1": [16, 24],
+        "2": [16, 24],
+        "3": [16, 24],
+        "4": [16, 24],
+        "5": [15, 25.5],
+        "6": [11.5, 25.5]
+    }
+}, {
+    "name": "Sparky's Diner",
+    "url": "http://www.yelp.com/biz/sparkys-24-hour-diner-san-francisco",
+    "hours": {
+        "all": [0, 24]
+    }
+}, {
+    "name": "Orphan Andy's",
+    "url": "http://www.yelp.com/biz/orphan-andys-san-francisco",
+    "hours": {
+        "all": [0, 24]
+    }
+}, {
+    "name": "The Armoury Club",
+    "url": "http://www.yelp.com/biz/the-armory-club-san-francisco-2",
+    "hours": {
+        "0": [17, 26],
+        "1": [0, 0],
+        "2": [17, 26],
+        "3": [17, 26],
+        "4": [17, 26],
+        "5": [17, 26],
+        "6": [17, 26]
+    }
+}, {
+    "name": "Shotwell's",
+    "url": "http://www.yelp.com/biz/shotwells-san-francisco",
+    "hours": {
+        "0": [16, 25],
+        "1": [16.5, 26],
+        "2": [16.5, 26],
+        "3": [16.5, 26],
+        "4": [16.5, 26],
+        "5": [16.5, 26],
+        "6": [16.5, 26]
+    }
+}]
