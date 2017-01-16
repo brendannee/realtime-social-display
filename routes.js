@@ -2,6 +2,7 @@ const async = require('async');
 const _ = require('underscore');
 const request = require('request');
 const nconf = require('nconf');
+const scraper = require('insta-scraper');
 
 
 exports.getTweets = function(req, res) {
@@ -82,22 +83,22 @@ exports.getInstagram = function(req, res) {
   const users = nconf.get('INSTAGRAM_USERS').split(',');
 
   let pictures = [];
+
   async.forEach(users, (user, cb) => {
-    request.get({
-      url: `https://api.instagram.com/v1/users/${user}/media/recent/`,
-      qs: {
-        access_token: nconf.get('INSTAGRAM_TOKEN')
-      },
-      json: true
-    }, (e, response, body) => {
-      pictures = _.union(pictures, body.data);
+    scraper.getAccountMedia(user, (err, response) => {
+      if (err) {
+        cb(err);
+      }
+
+      pictures = _.union(pictures, response);
       cb();
     });
-  }, (e) => {
+  }, (err) => {
+    if (err) {
+      console.err(error);
+    }
+
     res.json(_.sortBy(pictures, (picture) => {
-      if (!picture) {
-        return;
-      }
       return -1 * picture.created_time;
     }));
   });

@@ -322,9 +322,9 @@ $(function () {
   updateFoursquare();
   setInterval(updateFoursquare, 300000);
 
-  //update Instagram every 30 minutes
+  //update Instagram every 90 minutes
   updateInstagram();
-  setInterval(updateInstagram, 1800000);
+  setInterval(updateInstagram, 5400000);
 
   //scroll every 5 seconds
   setInterval(function () {
