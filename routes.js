@@ -75,11 +75,6 @@ exports.getFoursquare = function(req, res) {
 };
 
 exports.getInstagram = function(req, res) {
-  if (!nconf.get('INSTAGRAM_TOKEN')) {
-    console.error('No Instagram Token defined.');
-    return res.json({});
-  }
-
   const users = nconf.get('INSTAGRAM_USERS').split(',');
 
   let pictures = [];
