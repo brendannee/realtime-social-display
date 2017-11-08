@@ -74,7 +74,7 @@ exports.getFoursquare = function(req, res) {
   });
 };
 
-exports.getInstagram = function(req, res) {
+exports.getInstagram = function(req, res, next) {
   const users = nconf.get('INSTAGRAM_USERS').split(',');
 
   let pictures = [];
@@ -82,7 +82,7 @@ exports.getInstagram = function(req, res) {
   async.forEach(users, (user, cb) => {
     scraper.getAccountMedia(user, (err, response) => {
       if (err) {
-        cb(err);
+        return cb(err);
       }
 
       pictures = _.union(pictures, response);
@@ -90,7 +90,7 @@ exports.getInstagram = function(req, res) {
     });
   }, (err) => {
     if (err) {
-      console.err(error);
+      return next(err);
     }
 
     res.json(_.sortBy(pictures, (picture) => {
