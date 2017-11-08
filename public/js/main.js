@@ -260,24 +260,24 @@ function updateInstagram() {
           if (!picture) {
             return
           }
-          var createdAt = new Date(picture.created_time * 1000);
+          var createdAt = new Date(picture.date * 1000);
           if (new Date().getTime() - createdAt.getTime() < 30 * 24 * 60 * 60 * 1000) {
             $('<div>')
               .addClass('instagram')
               .append($('<img>')
                 .addClass('instagramImage')
-                .attr('src', picture.images.standard_resolution.url))
+                .attr('src', picture.thumbnail_resources[4].src))
               .append($('<div>')
                 .addClass('userInfo')
                 .append($('<img>')
-                  .attr('src', picture.user.profile_picture)
+                  .attr('src', picture.owner.profile_pic_url)
                   .addClass('userImage'))
                 .append($('<div>')
-                  .text(picture.user.full_name)
+                  .text(picture.owner.full_name)
                   .addClass('userName'))
                 .append($('<div>')
                   .addClass('caption')
-                  .html((picture.caption) ? picture.caption.text : ''))
+                  .html(picture.caption || ''))
                 .append($('<cite>')
                   .addClass('timeago')
                   .attr('title', createdAt.toISOString())))

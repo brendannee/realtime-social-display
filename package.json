@@ -6,7 +6,6 @@
   "dependencies": {
     "async": "2.6.0",
     "express": "4.16.2",
-    "insta-scraper": "tpritc/insta-scraper#fix/null-check-in-get-account-media",
     "moment": "2.19.1",
     "nconf": "0.9.1",
     "request": "2.83.0",

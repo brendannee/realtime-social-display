@@ -2,8 +2,6 @@ const async = require('async');
 const _ = require('underscore');
 const request = require('request');
 const nconf = require('nconf');
-const scraper = require('insta-scraper');
-
 
 exports.getTweets = function(req, res) {
   if (!nconf.get('TWITTER_TOKEN')) {
@@ -77,24 +75,43 @@ exports.getFoursquare = function(req, res) {
 exports.getInstagram = function(req, res, next) {
   const users = nconf.get('INSTAGRAM_USERS').split(',');
 
-  let pictures = [];
+  const pictures = [];
 
   async.forEach(users, (user, cb) => {
-    scraper.getAccountMedia(user, (err, response) => {
+    request.get(`https://www.instagram.com/${user}/?__a=1`, (err, response, body) => {
       if (err) {
-        return cb(err);
+        // don't returh errors for individual users
+        console.error(err);
+        return cb();
+      } else if(response.statusCode != 200) {
+        // don't returh errors for individual users
+        console.error(response.statusCode);
+        return cb();
       }
 
-      pictures = _.union(pictures, response);
-      cb();
+      try {
+        var json = JSON.parse(body);
+
+        json.user.media.nodes.forEach(picture => {
+          picture.owner = {
+            full_name: json.user.full_name,
+            profile_pic_url: json.user.profile_pic_url
+          }
+        });
+
+        pictures.push(...json.user.media.nodes);
+        cb();
+      } catch(err){
+        cb(err);
+      }
     });
   }, (err) => {
     if (err) {
       return next(err);
     }
 
-    res.json(_.sortBy(pictures, (picture) => {
-      return -1 * picture.created_time;
+    res.json(_.sortBy(pictures, picture => {
+      return -1 * picture.date;
     }));
   });
 };
