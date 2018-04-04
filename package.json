@@ -5,11 +5,11 @@
   "version": "1.0.0",
   "dependencies": {
     "async": "2.6.0",
-    "express": "4.16.2",
-    "moment": "2.19.1",
-    "nconf": "0.9.1",
-    "request": "2.83.0",
-    "serve-favicon": "2.4.5",
+    "express": "4.16.3",
+    "moment": "2.22.0",
+    "nconf": "0.10.0",
+    "request": "2.85.0",
+    "serve-favicon": "2.5.0",
     "underscore": "1.8.3"
   },
   "repository": {
@@ -20,7 +20,7 @@
     "start": "node ./bin/www"
   },
   "engines": {
-    "node": "8.1.4"
+    "node": "8.11.1"
   },
   "license": "MIT"
 }
