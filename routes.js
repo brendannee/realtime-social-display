@@ -92,14 +92,14 @@ exports.getInstagram = function(req, res, next) {
       try {
         var json = JSON.parse(body);
 
-        json.user.media.nodes.forEach(picture => {
-          picture.owner = {
-            full_name: json.user.full_name,
-            profile_pic_url: json.user.profile_pic_url
+        json.graphql.user.edge_owner_to_timeline_media.edges.forEach(edge => {
+          edge.node.owner = {
+            full_name: json.graphql.user.full_name,
+            profile_pic_url: json.graphql.user.profile_pic_url
           }
         });
 
-        pictures.push(...json.user.media.nodes);
+        pictures.push(...json.graphql.user.edge_owner_to_timeline_media.edges);
         cb();
       } catch(err){
         cb(err);
@@ -111,7 +111,7 @@ exports.getInstagram = function(req, res, next) {
     }
 
     res.json(_.sortBy(pictures, picture => {
-      return -1 * picture.date;
+      return -1 * picture.node.taken_at_timestamp;
     }));
   });
 };

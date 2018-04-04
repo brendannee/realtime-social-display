@@ -256,11 +256,17 @@ function updateInstagram() {
     $.getJSON('/api/instagram', function (data) {
       if (data.length) {
         $('#instagram .instagram').remove();
-        data.forEach(function (picture) {
-          if (!picture) {
+        data.forEach(function (edge) {
+          if (!edge) {
             return
           }
-          var createdAt = new Date(picture.date * 1000);
+          var picture = edge.node
+          var createdAt = new Date(picture.taken_at_timestamp * 1000);
+          var caption = '';
+
+          if (picture.edge_media_to_caption && picture.edge_media_to_caption.edges && picture.edge_media_to_caption.edges.length) {
+            caption = picture.edge_media_to_caption.edges[0].node.text;
+          }
           if (new Date().getTime() - createdAt.getTime() < 30 * 24 * 60 * 60 * 1000) {
             $('<div>')
               .addClass('instagram')
@@ -277,7 +283,7 @@ function updateInstagram() {
                   .addClass('userName'))
                 .append($('<div>')
                   .addClass('caption')
-                  .html(picture.caption || ''))
+                  .html(caption))
                 .append($('<cite>')
                   .addClass('timeago')
                   .attr('title', createdAt.toISOString())))
