@@ -30,7 +30,7 @@ var linkify = (function () {
   }
 
   var linkify = function (post) {
-    var text = post.text,
+    var text = post.full_text,
       offset = 0;
     var entities = mergeByIndices(mergeByIndices(post.entities.hashtags, post.entities.urls), post.entities.user_mentions);
     entities.forEach(function (entity) {
@@ -53,7 +53,7 @@ function updateTwitter() {
         since_id = (tweet.id > since_id) ? tweet.id : since_id;
 
         //ignore @replies and blank tweets
-        if (tweet.text == undefined || (tweet.in_reply_to_user_id && tweet.in_reply_to_screen_name != 'pwndepot') || (tweet.text[0] == '@' && tweet.text.substring(0, 9) != '@pwndepot')) {
+        if (tweet.full_text == undefined || (tweet.in_reply_to_user_id && tweet.in_reply_to_screen_name != 'pwndepot') || (tweet.full_text[0] == '@' && tweet.full_text.substring(0, 9) != '@pwndepot')) {
           return;
         }
         // Build the html string for the current tweet
