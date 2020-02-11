@@ -20,7 +20,7 @@
     "start": "node ./bin/www"
   },
   "engines": {
-    "node": "10.16.3"
+    "node": "12.15.0"
   },
   "license": "MIT"
 }
